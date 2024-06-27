@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>問題解決フォーム</title>
+    <style>
+        body {
+            font-size: 18px;
+        }
+        textarea {
+            width: 350px;
+            height: 100px;
+            font-size: 18px;
+        }
+        #output {
+            font-size: 20px;
+            width: 350px;
+            height: 300px;
+            white-space: pre-wrap; /* 改行を反映するため */
+        }
+        .button-group {
+            margin-bottom: 20px;
+        }
+        .button-group button {
+            font-size: 18px;
+            margin-right: 10px;
+        }
+        .active {
+            background-color: yellow;
+        }
+    </style>
+</head>
+<body>
+
+<h1>問題解決フォーム</h1>
+
+<div id="formContainer">
+    <!-- 各質問項目のコード -->
+    <div id="questions">
+        <div id="question1">
+            <label for="q1">Q1=保存名タイトルを一行で入力してください</label><br>
+            <input type="text" id="q1" maxlength="20" style="font-size: 18px;"><br><br>
+        </div>
+
+        <div id="question2">
+            <label for="q2">Q2=発生の日付を選択してください</label><br>
+            <input type="date" id="q2" style="font-size: 18px;"><br><br>
+        </div>
+
+        <div id="question3">
+            <label for="q3">Q3=客先名を教えてください</label><br>
+            <input type="text" id="q3" style="font-size: 18px;"><br><br>
+        </div>
+
+        <div id="question4">
+            <label for="q4">Q4=機械の名称を選択してください</label><br>
+            <select id="q4" style="font-size: 18px;">
+                <option value="MACHINE">機械名の選択</option>
+                <option value="ACIES">ACIES</option>
+                <option value="EML">EML</option>
+                <option value="EMZ">EMZ</option>
+                <option value="C1">C1</option>
+                <option value="ACIES-AJ">ACIES-AJ</option>
+                <option value="EML-AJ">EML-AJ</option>
+                <option value="C1-AJ">C1-AJ</option>
+                <option value="Valstar">Valstar</option>
+                <option value="Others">その他</option>
+            </select><br><br>
+        </div>
+
+        <div id="question5">
+            <label for="q5">Q5=周辺装置の機種名を選択してください</label><br>
+            <select id="q5" style="font-size: 18px;">
+                <option value="AS-ULS">周辺装置の選択</option>
+                <option value="AS-ULS">AS-ULS</option>
+                <option value="AS-ULS-NTK">AS-ULS-NTK</option>
+                <option value="ASR-N">ASR-N</option>
+                <option value="ASR-NTK">ASR-NTK</option>
+                <option value="TK-L">TK-L</option>
+                <option value="MARS-N">MARS-N</option>
+                <option value="Others">その他</option>
+            </select><br><br>
+        </div>
+        <div id="question6">
+            <label for="q6">Q6=自動プロの種類を教えてください</label><br>
+            <select id="q6" style="font-size: 18px;">
+                <option value="VPSS4ie">自動プロの選択</option>
+                <option value="VPSS4ie">VPSS4ie</option>
+                <option value="VPSS3i">VPSS3i</option>
+                <option value="AP100">AP100</option>
+                <option value="他社">他社</option>
+                <option value="自社">自社</option>
+            </select><br><br>
+        </div>
+
+        <div id="question7">
+            <label for="q7">Q7=状況を詳細に教えてください</label><br>
+            <textarea id="q7" style="font-size: 18px;"></textarea><br><br>
+        </div>
+
+        <div id="question8">
+            <label for="q8">Q8=対策・原因・理由を教えてください</label><br>
+            <textarea id="q8" style="font-size: 18px;"></textarea><br><br>
+        </div>
+
+        <div id="question9">
+            <label for="q9">Q9=発生した環境や状況・注意点があれば教えてください</label><br>
+            <textarea id="q9" style="font-size: 18px;"></textarea><br><br>
+
+            <div class="button-group">
+                <button onclick="togglePrefix(this, '未解決')">未解決</button>
+                <button onclick="togglePrefix(this, '覚書')">覚書</button>
+                <button onclick="togglePrefix(this, '重要')">重要</button>
+                <button onclick="togglePrefix(this, '開発')">開発</button>
+                <button onclick="togglePrefix(this, '制御')">制御</button>
+                <button onclick="togglePrefix(this, 'ソフト')">ソフト</button>
+                <button onclick="togglePrefix(this, '伝聞')">伝聞</button>
+                <button onclick="togglePrefix(this, 'その他')">その他</button>
+            </div>
+            
+            <button onclick="generateText()" style="font-size: 18px;">OK</button>
+        </div>
+    </div>
+</div>
+
+<h2>出力結果</h2>
+<textarea id="output" rows="20" cols="50" style="font-size: 20px;"></textarea>
+<button onclick="copyToClipboard()" style="font-size: 18px;">コピー</button>
+
+<script>
+    // ページ読み込み時に現在の日付を設定
+    window.onload = function() {
+        let today = new Date().toISOString().split('T')[0];
+        document.getElementById("q2").value = today;
+    }
+
+    let prefix = '';
+
+    function togglePrefix(button, value) {
+        if (prefix === value) {
+            prefix = '';
+            button.classList.remove('active');
+        } else {
+            prefix = value;
+            const buttons = document.querySelectorAll('.button-group button');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+        }
+    }
+
+    function generateText() {
+        let answers = {
+            title: document.getElementById("q1").value,
+            date: document.getElementById("q2").value,
+            clientName: document.getElementById("q3").value,
+            machineName: document.getElementById("q4").options[document.getElementById("q4").selectedIndex].text,
+            peripheralModel: document.getElementById("q5").options[document.getElementById("q5").selectedIndex].text,
+            autoPrograming: document.getElementById("q6").options[document.getElementById("q6").selectedIndex].text,
+            symptom: document.getElementById("q7").value,
+            cause: document.getElementById("q8").value,
+            environment: document.getElementById("q9").value
+        };
+
+        let outputText = `
+${prefix}
+
+タイトル: ${answers.title}
+
+日付: ${answers.date}
+
+客先名: ${answers.clientName}
+
+機械の名称: ${answers.machineName}
+
+周辺装置の機種名: ${answers.peripheralModel}
+
+自動プロの種類: ${answers.autoPrograming}
+
+発生した症状: ${answers.symptom}
+
+発生した原因・理由: ${answers.cause}
+
+対策方法: ${answers.solution}
+
+発生した環境・注意点: ${answers.environment}
+`;
+
+        // 改行を追加する関数
+        function addLineBreaks(text, maxLength) {
+            let result = '';
+            let line = '';
+            text.split('\n').forEach(paragraph => {
+                line += paragraph;
+                while (line.length > maxLength) {
+                    result += line.slice(0, maxLength) + '\n';
+                    line = line.slice(maxLength);
+                }
+                result += line + '\n';//￥ｎ空白行の数の増減はここ
+                line = '';
+            });
+            return result;
+        }
+
+        outputText = addLineBreaks(outputText, 25); // 25文字ごとに改行を追加
+
+        // ファイル保存ダイアログの表示
+        saveToFile(outputText, `${prefix}_${answers.title}`, answers.date, answers.clientName);
+
+        document.getElementById("output").value = outputText;
+    }
+
+    function copyToClipboard() {
+        const output = document.getElementById("output");
+        output.select();
+        document.execCommand("copy");
+        alert("コピーしました！");
+    }
+
+    function saveToFile(text, title, date, clientName) {
+        const blob = new Blob([text], { type: 'text/plain' });
+        const a = document.createElement('a');
+
+        // ファイル名を動的に生成
+        const filename = `${title}_${date.replace(/-/g, '')}_${clientName}.txt`;
+        a.href = URL.createObjectURL(blob);
+        a.download = filename;
+
+        const clickHandler = () => {
+            setTimeout(() => {
+                URL.revokeObjectURL(a.href);
+                a.removeEventListener('click', clickHandler);
+            }, 150);
+        };
+
+        a.addEventListener('click', clickHandler, false);
+        a.click();
+    }
+</script>
+
+</body>
+</html>
