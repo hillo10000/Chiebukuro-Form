@@ -83,7 +83,10 @@
                 <option value="AS-ULS-NTK">AS-ULS-NTK</option>
                 <option value="ASR-N">ASR-N</option>
                 <option value="ASR-NTK">ASR-NTK</option>
-                <option value="TK-L">TK-L</option>
+                <option value="ASFH+TKL">ASFH+TKL</option>
+                <option value="ASF+TKL">ASF+TKL</option>
+                <option value="ASG+TKL">ASF+TKL</option>
+                <option value="ASTFF+TKL">ASTFF+TKL</option>
                 <option value="MARS-N">MARS-N</option>
                 <option value="Others">その他</option>
             </select><br><br>
@@ -97,6 +100,7 @@
                 <option value="AP100">AP100</option>
                 <option value="AP100">DR.ABE</option>
                 <option value="他社">他社</option>
+                 <option value="他社">他社+CAMEX</option>
                 <option value="自社">自社</option>
             </select><br><br>
         </div>
@@ -116,7 +120,7 @@
             <textarea id="q9" style="font-size: 18px;"></textarea><br><br>
         
             <div id="question10">
-                <label for="q10">Q10=メールの記録があれば日付を教えてください</label><br>
+                <label for="q10">Q10=問合わせの日付を教えてください</label><br>
                 <input type="date" id="q10" style="font-size: 18px;"><br><br>
             </div>    
          
@@ -147,6 +151,7 @@
                 <button onclick="togglePrefix(this, '伝聞')">伝聞</button>
                 <button onclick="togglePrefix(this, 'AFP掲載')">AFP掲載</button>
                 <button onclick="togglePrefix(this, 'メールあり')">メールあり</button>
+                <button onclick="togglePrefix(this, 'salesforce')">salesforce</button>
             </div>
             
             <button onclick="generateText()" style="font-size: 18px;">OK</button>
@@ -215,7 +220,7 @@ ${prefix}
 
 [その時の環境・注意点] ${answers.environment}
 
-[メールの記録日] ${answers.mailDate}
+[問合わせ日付] ${answers.mailDate}
 
 [AFPナンバー] ${answers.afpNO}
 `;
